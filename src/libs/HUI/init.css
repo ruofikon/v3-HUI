@@ -1,0 +1,28 @@
+div, ul, li, i, span, input {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  box-sizing: border-box;
+}
+.clearfix::after {
+  content: "";
+  height: 0;
+  visibility: hidden;
+  display: block;
+  clear: both;
+}
+.clearfix {
+  *zoom: 1;
+}
+i {
+  font-style: normal;
+}
+ul, li {
+  list-style: none;
+}
+
+input {
+  border: none;
+  height: 100%;
+  outline: none;
+}
