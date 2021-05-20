@@ -1,13 +1,18 @@
 <template>
   <div class="h-select-menu">
     <ul class="h-menu">
-      <li class="h-menu-item" v-for="item in memu" :key="item.hValue">{{item.hText}}</li>
+      <li class="h-menu-item"
+        v-for="item in memu"
+        :key="item.hValue"
+        @click="onSelected(item)"
+        v-html="item.hText"
+      >
+      </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { onMounted } from 'vue'
 export default {
   name: 'HSelectMenu',
   props: {
@@ -17,10 +22,14 @@ export default {
       default: () => []
     }
   },
-  setup (props) {
-    onMounted(() => {
-      console.log(props.menu)
-    })
+  setup (props, ctx) {
+    const onSelected = (item) => {
+      ctx.emit('onSelected', item)
+    }
+
+    return {
+      onSelected
+    }
   }
 }
 </script>

@@ -28,7 +28,7 @@ export default {
         { id: 7, text: '我是abd汽车全额去' },
         { id: 8, text: '我是ab八十陈乔恩' },
         { id: 9, text: '我是ab范围分为' },
-        { id: 10, text: '我是ab电放费大V' },
+        { id: 10, text: 'a我是ab电放费大V' },
         { id: 11, text: '我是ab上档次' },
         { id: 12, text: '我是ab请求' },
         { id: 13, text: '我是ab请问父亲' },

@@ -2,12 +2,15 @@
   <div class="h-input">
     <!-- placeholder -->
     <div class="h-placeholder">{{placeholder}}</div>
-
+    <div class="h-selected" v-show="selectedValue">{{selectedValue}}</div>
     <!-- input -->
     <input
       type="text"
       class="h-select-input"
       v-model="value"
+      @input="changeInput"
+      @focus="onFocus"
+      @blur="onBlur"
     />
 
     <!-- suffix-span -->
@@ -24,6 +27,7 @@ export default {
   name: 'HInput',
   props: {
     placeholder: String,
+    selectedValue: String,
     modelValue: {
       type: String,
       default: ''
@@ -48,18 +52,43 @@ export default {
 
     // 派发 value 给select 加上防抖
     const changeValue = (value) => {
+      // if (state.timer) {
+      //   clearTimeout(state.timer)
+      // }
+      // state.timer = setTimeout(() => {
+      //   ctx.emit('update:modelValue', value)
+      //   state.timer = null
+      // }, 400)
+    }
+
+    const changeInput = (e) => {
+      // ctx.emit('changeInput')
       if (state.timer) {
         clearTimeout(state.timer)
       }
       state.timer = setTimeout(() => {
-        ctx.emit('update:modelValue', value)
+        // ctx.emit('update:modelValue', value)
+        ctx.emit('changeInput', state.value)
         state.timer = null
       }, 400)
+    }
+    const onFocus = () => {
+      state.value = ''
+      ctx.emit('changeInput', state.value)
+      // console.log(props.modelValue)
+    }
+    const onBlur = () => {
+      // state.value = ''
+      // ctx.emit('changeInput', state.value)
+      // console.log(props.modelValue)
     }
 
     return {
       ...toRefs(state),
-      changeValue
+      changeValue,
+      changeInput,
+      onFocus,
+      onBlur
     }
   }
 }
