@@ -1,10 +1,97 @@
+let _vNode, instance
+
+function isNotMuitiple (el, ctx) {
+  _vNode = ctx.instance.el
+  instance = ctx.instance
+
+  if (!instance.multiple) {
+    // el 点击 隐藏placeholder 显示input 聚焦
+    el.addEventListener('click', function () {
+      _vNode.oPlaceholder.style.display = 'none'
+      _vNode.oInput.style.display = 'block'
+      _vNode.oInput.focus()
+      _vNode.oInputIcon.className = 'suffix-icon iconfont icon-search'
+      isShowMenu()
+    }, false)
+
+    // oInput 失焦的时候 显示 placeholder 和 icon
+    _vNode.oInput.addEventListener('blur', function () {
+      setTimeout(() => {
+        _vNode.oMemu.style.display = 'none'
+        _vNode.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      }, 100)
+    }, false)
+
+    // oInput 聚焦的时候 显示 search-icon
+    _vNode.oInput.addEventListener('focus', function () {
+      _vNode.oInputIcon.className = 'suffix-icon iconfont icon-search'
+    }, false)
+
+    // oInput hover
+    _vNode.oInput.addEventListener('mouseenter', function () {
+      // console.log('[鼠标移入]', _vNode.oInput.value)
+      if (_vNode.oInput.value) {
+        _vNode.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      }
+    }, false)
+    // oInput hover
+    _vNode.oInput.addEventListener('mouseleave', function () {
+      if (_vNode.oInput.value) {
+        // console.log('[dowm]', _vNode.oInput.value)
+        _vNode.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      } else {
+        _vNode.oInputIcon.className = 'suffix-icon iconfont icon-search'
+      }
+    }, false)
+
+    // oInputIcon hover
+    _vNode.oInputIcon.addEventListener('mouseenter', function () {
+      if (_vNode.oInput.value) {
+        _vNode.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      }
+    }, false)
+
+    // oInputIcon hover
+    _vNode.oInputIcon.addEventListener('mouseleave', function () {
+      if (_vNode.oInput.value) {
+        _vNode.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      } else {
+        _vNode.oInputIcon.className = 'suffix-icon iconfont icon-search'
+      }
+    }, false)
+
+    // oInputIcon cilck
+    _vNode.oInputIcon.addEventListener('click', function (e) {
+      changeIconEvent(e, this.className)
+    }, false)
+  }
+}
+// 是否自动展示 menu
+function isShowMenu () {
+  if (instance.autoShowMenu) {
+    _vNode.oMemu.style.display = 'block'
+  }
+}
+
+function changeIconEvent (e, className) {
+  if (className.includes('icon-down')) {
+    _vNode.oInputIcon.className = 'suffix-icon iconfont icon-search'
+    _vNode.oInput.focus()
+  } else {
+    window.event ? window.event.cancelBubble = true : e.stopPropagation()
+    if (className.includes('icon-close')) {
+      instance.clear()
+      _vNode.oInput.blur()
+    }
+  }
+}
+
 export default {
   mounted (el, ctx) {
-    console.log('[el]', el)
-    // console.log('[ctx.instance]', ctx.instance)
+    // console.log('[el]', el)
+    // console.log('[instance]', instance)
     const oInput = el.querySelector('.h-select-input')
     const oPlaceholder = el.querySelector('.h-placeholder')
-    const oSelected = el.querySelector('.h-selected')
     const oInputIcon = el.querySelector('.suffix-icon')
     const oMemu = el.querySelector('.h-select-menu')
 
@@ -15,54 +102,8 @@ export default {
       oInputIcon,
       oMemu
     }
-    // el 点击 隐藏placeholder 显示input 聚焦
-    el.addEventListener('click', function () {
-      oPlaceholder.style.display = 'none'
 
-      oInput.style.display = 'block'
-      oInput.focus()
-
-      isShowMenu()
-    }, false)
-
-    // oInput 失焦的时候 显示 placeholder 和 icon
-    oInput.addEventListener('blur', function () {
-      setTimeout(() => {
-        oSelected.style.display = 'block'
-        selectOne() // 选中时
-        oInputIcon.className = 'suffix-icon iconfont icon-down'
-      }, 100)
-    }, false)
-
-    // oInput 聚焦的时候 显示 search-icon
-    oInput.addEventListener('focus', function () {
-      oSelected.style.display = 'none'
-      oInputIcon.className = 'suffix-icon iconfont icon-search'
-    }, false)
-
-    // 是否自动展示 menu
-    function isShowMenu () {
-      if (ctx.instance.autoShowMenu) {
-        oMemu.style.display = 'block'
-      }
-    }
-
-    // 如果是单选
-    function selectOne () {
-      const multiple = ctx.instance.multiple
-      const value = ctx.instance.selectedValue
-      // if 单选
-      if (!multiple) {
-        oMemu.style.display = 'none'
-        oInput.style.display = 'none'
-        // 选中时
-        if (value) {
-          oPlaceholder.style.display = 'none'
-        } else {
-          // 没选择
-          oPlaceholder.style.display = 'block'
-        }
-      }
-    }
+    // 单选
+    isNotMuitiple(el, ctx)
   }
 }

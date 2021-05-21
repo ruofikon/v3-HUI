@@ -1,17 +1,22 @@
 <template>
-  <div class="h-selector" v-focus>
+  <div :class="['h-selector', {'is-focus': isFocus}]" v-focus>
     <!-- input -->
     <h-input
+      v-show="!multiple"
       v-model="searchValue"
       :placeholder="placeholder"
-      :selectedValue="selectedValue"
+      :selectedObj="selectedObj"
       @changeInput="changeInput"
+      @onfocus="onfocus"
+      @onblur="onblur"
     >
     </h-input>
 
     <!-- menu -->
     <h-select-menu
       :memu="menuData"
+      :empty="isEmpty"
+      :selectedObj="selectedObj"
       @onSelected="onSelected"
     >
     </h-select-menu>
@@ -23,6 +28,9 @@ import { reactive, toRefs, watch, onMounted } from 'vue'
 import focus from '../directives/selector'
 import HInput from './HInput'
 import HSelectMenu from './HSelectMenu'
+import useNotMultipleFn from './js/notMultiple'
+import useSearchFn from './js/search'
+import useDoData from './js/dodata'
 export default {
   name: 'HSelector',
   directives: {
@@ -60,94 +68,87 @@ export default {
     multiple: {
       type: Boolean,
       default: false
+    },
+
+    // 值
+    modelValue: {
+      type: [String, Number],
+      default: ''
     }
   },
-  setup (props) {
+  setup (props, ctx) {
     const state = reactive({
       el: {}, // 用来存储节点
       searchValue: '', // 搜索值
       menuData: [], // 数据
+      menuMap: new Map(), // 数据
       originMenu: [], // 备份数据
-      selectedValue: '' // 单选选中的
+      selectedObj: {}, // 单选选中的
+      isFocus: false,
+      isEmpty: false
 
     })
+
+    const doData = useDoData(state, props, ctx)
+    const selectedFn = useNotMultipleFn(state, props, ctx)
+    const searchFn = useSearchFn(state, props, ctx)
 
     onMounted(() => {
-      doData(props.data)
-    })
-
-    watch(() => state.searchValue, newVal => {
 
     })
 
-    // 改造数据
-    const doData = (data) => {
-      const _data = JSON.parse(JSON.stringify(data))
-      const value = props.defaultPorp.value
-      const label = props.defaultPorp.label
+    watch(() => props.data, ndata => {
+      console.log('[data]', ndata)
+      doData.getData(props.data)
+      selectedFn._mounted() // 默认选中
+    })
 
-      const hData = _data.map(item => {
-        item.hValue = item[value]
-        item.hText = item[label]
-        item.hLabel = item[label]
-        return item
-      })
-      // console.log('[处理过的data]', hData)
-      state.menuData = hData
-      state.originMenu = state.menuData // 存储一份用来筛选
-    }
-
-    // 筛选
-    const searchItem = (value) => {
-      console.log('[筛选]', value)
-      if (!value) {
-        setTimeout(() => {
-          state.menuData = state.originMenu
-        }, 200)
-        return
-      }
-      const _value = value.toLowerCase()
-      state.menuData = state.originMenu.filter(item => {
-        if (item.hLabel.toLowerCase().includes(_value)) {
-          // item.hText = item.hLabel.replace(new RegExp(_value, 'g'), `<span class="h-same-text">${_value}</span>`)
-          // console.log(item)
-          return item
-        }
-      })
+    // 输入搜索
+    const changeInput = (val) => {
+      // console.log('[changeInput]', val)
+      searchFn.search(val)
     }
 
     // 选中 select 区分单选和多选
     const onSelected = (optionItem) => {
       if (!props.multiple) {
-        selectOne(optionItem)
+        selectedFn.selected(optionItem) // 单选选中
       } else {
 
       }
     }
 
-    // 单选时选中 option 赋值给 input 并传给外界
-    const selectOne = (optionItem) => {
-      // state.searchValue = optionItem.hLabel
-      // state.el.oInput.blur()
-      state.selectedValue = optionItem.hLabel
-      // setTimeout(() => {
-      //   state.menuData = state.originMenu
-      // }, 600)
+    const onfocus = (value) => {
+      state.menuData = state.originMenu
+      state.isFocus = true
+      state.isEmpty = false
     }
 
-    // 输入搜索
-    const changeInput = (val) => {
-      // console.log('[changeInput]', val)
-      searchItem(val)
+    const onblur = (value) => {
+      state.isFocus = false
+      if (!props.multiple) {
+        selectedFn.blur()
+      } else {
+
+      }
+    }
+
+    // 清空 清空视图并导出value值
+    const clear = () => {
+      if (!props.multiple) {
+        selectedFn.clear()
+      } else {
+
+      }
     }
 
     return {
       ...toRefs(state),
-      doData,
       onSelected,
-      selectOne,
-      searchItem,
-      changeInput
+      changeInput,
+      onfocus,
+      onblur,
+      clear
     }
   }
 
@@ -165,8 +166,17 @@ export default {
   border: 1px solid $border-color;
   border-radius: 4px;
   color: $text-color;
+  transition: border-color .2s;
+  -webkit-transition: border-color .2s;
+  -o-transition: border-color .2s;
+  -moz-transition: border-color .2s;
 }
-
+.h-selector.is-focus {
+  border-color: $theme-color;
+}
+.h-selector:hover {
+  border-color: $theme-color;
+}
 .iconfont {
   color: $placeholder-color;
 }

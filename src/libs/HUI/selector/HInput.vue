@@ -2,7 +2,6 @@
   <div class="h-input">
     <!-- placeholder -->
     <div class="h-placeholder">{{placeholder}}</div>
-    <div class="h-selected" v-show="selectedValue">{{selectedValue}}</div>
     <!-- input -->
     <input
       type="text"
@@ -27,7 +26,10 @@ export default {
   name: 'HInput',
   props: {
     placeholder: String,
-    selectedValue: String,
+    selectedObj: {
+      type: Object,
+      default: () => ({})
+    },
     modelValue: {
       type: String,
       default: ''
@@ -39,27 +41,11 @@ export default {
       timer: null
     })
 
-    watch(() => state.value, newVal => {
-      // ctx.emit('update:modelValue', newVal)
-      changeValue(newVal)
-    })
-
     watch(() => props.modelValue, newVal => {
       if (newVal !== state.value) {
         state.value = newVal
       }
     })
-
-    // 派发 value 给select 加上防抖
-    const changeValue = (value) => {
-      // if (state.timer) {
-      //   clearTimeout(state.timer)
-      // }
-      // state.timer = setTimeout(() => {
-      //   ctx.emit('update:modelValue', value)
-      //   state.timer = null
-      // }, 400)
-    }
 
     const changeInput = (e) => {
       // ctx.emit('changeInput')
@@ -72,20 +58,27 @@ export default {
         state.timer = null
       }, 400)
     }
+
+    // 聚焦的时候, 清除input值, 如果有选值则不派发更新
     const onFocus = () => {
+      // console.log('[聚焦]', props.selectedObj)
       state.value = ''
-      ctx.emit('changeInput', state.value)
-      // console.log(props.modelValue)
+      ctx.emit('onfocus', state.value)
     }
+
+    // 失焦的时候, 如果有记录的选值就赋值
     const onBlur = () => {
-      // state.value = ''
-      // ctx.emit('changeInput', state.value)
-      // console.log(props.modelValue)
+      setTimeout(() => {
+        if (props.selectedObj.hLabel) {
+          state.value = props.selectedObj.hLabel
+        }
+      }, 150)
+
+      ctx.emit('onblur')
     }
 
     return {
       ...toRefs(state),
-      changeValue,
       changeInput,
       onFocus,
       onBlur
@@ -116,7 +109,10 @@ export default {
 
   .h-select-input {
     display: none;
-    min-width: 60px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: $text-color;
   }
 
@@ -127,5 +123,12 @@ export default {
     width: 30px;
     height: 100%;
     text-align: center;
+  }
+  .suffix-icon {
+    cursor: pointer;
+  }
+
+  .h-selected {
+    width: 100%;
   }
 </style>
