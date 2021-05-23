@@ -1,7 +1,9 @@
 <template>
   <div class="h-select-menu">
+
     <ul class="h-menu">
-      <li class="empty-item" v-show="empty">无数据</li>
+      <li class="empty-item" v-show="empty && !loading">无数据</li>
+      <li class="loading-item" v-show="loading">加载中</li>
       <li class="h-menu-item"
         v-for="item in memu"
         :key="item.hValue"
@@ -30,7 +32,12 @@ export default {
     empty: {
       typeof: Boolean,
       default: false
+    },
+    loading: {
+      typeof: Boolean,
+      default: false
     }
+
   },
   setup (props, ctx) {
     const onSelected = (item) => {
@@ -103,7 +110,8 @@ export default {
     font-weight: 700;
   }
 
-  .empty-item {
+  .empty-item,
+  .loading-item {
     padding: 10px 0;
     text-align: center;
   }

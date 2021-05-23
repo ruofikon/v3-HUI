@@ -28,6 +28,10 @@ function Fn (state, props, ctx) {
 
     // 失焦
     blur: function () {
+      // 如果selected 里面没有值,则清空input值
+      if (!state.selectedObj.hValue) {
+        state.searchValue = ''
+      }
       setTimeout(() => {
         if (!state.searchValue && !state.selectedObj.hValue) {
           state.el.oPlaceholder.style.display = 'block'

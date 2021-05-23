@@ -2,13 +2,17 @@
   <div>
     <h-selector
       class="my-select"
+      v-model="value"
       placeholder="请输入关键字搜索"
       :data="options"
       :defaultPorp="{value: 'id', label: 'text'}"
-      v-model="value"
+      remote
+
+      :loading="loading"
+      :remote-method="filterable"
     >
     </h-selector>
-
+  <!-- :autoShowMenu="false" -->
     <h1>521521521521521521521521</h1>
     <h1>---- {{ value }} ----</h1>
 
@@ -21,6 +25,7 @@ export default {
   setup (props) {
     const state = reactive({
       value: '',
+      loading: false,
       options: [],
       options2: [
         { id: '1', text: '我是ab' },
@@ -69,13 +74,25 @@ export default {
 
     onMounted(() => {
       setTimeout(() => {
-        state.options = state.options2
-        state.value = '3'
+        // state.options = state.options2
+        // state.value = '3'
       }, 3000)
     })
 
+    function filterable (value) {
+      console.log('[远程搜索]', value)
+      state.loading = true
+      setTimeout(() => {
+        state.options = state.options2.filter(item => {
+          return item.text.includes(value)
+        })
+        state.loading = false
+      }, 1000)
+    }
+
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      filterable
     }
   }
 }
