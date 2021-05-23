@@ -11,6 +11,9 @@
       :loading="loading"
       :remote-method="filterable"
     >
+      <template #empty>
+        <span>没有无数据呢</span>
+      </template>
     </h-selector>
   <!-- :autoShowMenu="false" -->
     <h1>521521521521521521521521</h1>
@@ -21,6 +24,7 @@
 </template>
 <script>
 import { onMounted, reactive, toRefs } from 'vue'
+import axios from 'axios'
 export default {
   setup (props) {
     const state = reactive({
@@ -73,21 +77,32 @@ export default {
     })
 
     onMounted(() => {
-      setTimeout(() => {
-        // state.options = state.options2
-        // state.value = '3'
-      }, 3000)
+      getList('')
     })
 
-    function filterable (value) {
-      console.log('[远程搜索]', value)
-      state.loading = true
-      setTimeout(() => {
-        state.options = state.options2.filter(item => {
-          return item.text.includes(value)
+    function getList (key, loading) {
+      loading && (state.loading = true)
+      axios.get('http://localhost:8080/config/datas/options.json').then(res => {
+        // console.log(res)
+        state.options = res.data.filter(item => {
+          return item.text.includes(key)
         })
-        state.loading = false
-      }, 1000)
+        loading && (state.loading = false)
+      }).catch(err => {
+        console.log(err)
+        loading && (state.loading = false)
+      })
+    }
+
+    function filterable (value) {
+      // console.log('[远程搜索]', value)
+      getList(value, true)
+      // setTimeout(() => {
+      //   state.options = state.options2.filter(item => {
+      //     return item.text.includes(value)
+      //   })
+      //   state.loading = false
+      // }, 1000)
     }
 
     return {

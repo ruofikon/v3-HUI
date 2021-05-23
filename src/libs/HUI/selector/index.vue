@@ -10,6 +10,7 @@
       @onfocus="onfocus"
       @onblur="onblur"
     >
+
     </h-input>
 
     <!-- menu -->
@@ -20,6 +21,16 @@
       :selectedObj="selectedObj"
       @onSelected="onSelected"
     >
+
+      <template #empty>
+         <slot name="empty">无数据</slot>
+      </template>
+      <template #loading>
+         <slot name="loading">加载中</slot>
+      </template>
+      <template #default="scope">
+        <slot :option="scope.option">{{scope.option.hText}}</slot>
+      </template>
     </h-select-menu>
   </div>
 </template>
@@ -32,6 +43,7 @@ import HSelectMenu from './HSelectMenu'
 import useNotMultipleFn from './js/notMultiple'
 import useSearchFn from './js/search'
 import useDoData from './js/dodata'
+import useMenuScroll from './js/menuScroll'
 export default {
   name: 'HSelector',
   directives: {
@@ -91,6 +103,15 @@ export default {
     // 远程加载 方法
     remoteMethod: {
       type: Function
+    },
+
+    // 滚动 方法
+    selectMenuScroll: {
+      type: Function
+    },
+    // 滚动距离
+    scrollBottomValue: {
+      type: Number
     }
   },
   setup (props, ctx) {
@@ -103,14 +124,23 @@ export default {
       historyMap: new Map(), // 搜索历史记录
       selectedObj: {}, // 单选选中的
       isFocus: false,
-      isEmpty: false
-      // isRemoting: false // 是否在远程搜索
+      isEmpty: false,
+
+      // 分页加载
+      scrollInfo: {
+        data: [],
+        size: 20,
+        currentPage: 1,
+        count: 0,
+        pageCount: 1
+      }
 
     })
 
     const doData = useDoData(state, props, ctx)
     const selectedFn = useNotMultipleFn(state, props, ctx)
     const searchFn = useSearchFn(state, props, ctx)
+    const scrollFn = useMenuScroll(state, props, ctx)
 
     onMounted(() => {
     })
@@ -119,6 +149,7 @@ export default {
       doData.getData(props.data)
       // 监听空值
       state.isEmpty = !(state.menuData.length > 0)
+      // console.log('isEmpty', state.isEmpty)
       // selectedFn._mounted() // 默认选中
     })
 
@@ -131,7 +162,7 @@ export default {
     // 监听 loading
     watch(() => props.loading, nloading => {
       // if false 则记录历史搜索记录
-      if (!nloading) {
+      if (!nloading && !state.historyMap[state.searchValue]) {
         state.historyMap[state.searchValue] = state.originMenu
       } else {
 
@@ -141,6 +172,10 @@ export default {
     // 输入搜索
     const changeInput = (val) => {
       // console.log('[changeInput]', val)
+      // 将滚动加载的页面初始化
+      // state.scrollInfo.currentPage = 1
+      // state.scrollInfo.data = []
+
       // 先查找历史记录
       const history = searchFn.searchHistory(val)
       if (history.length > 0) {
@@ -154,7 +189,9 @@ export default {
         // state.menuMap = new Map()
 
         state.el.oMemu.style.display = 'block'
-        props.remoteMethod(val)
+        if (typeof props.remoteMethod === 'function') {
+          props.remoteMethod(val)
+        }
         state.searchValue = val
       } else {
         searchFn.search(val)
@@ -171,10 +208,17 @@ export default {
     }
 
     const onfocus = (value) => {
-      state.menuData = state.originMenu
-      state.isFocus = true
-      state.isEmpty = !(state.menuData.length > 0)
       // state.isEmpty = false
+
+      // 如果自动展示， 则聚焦的时候暴露搜索方法
+      if (props.autoShowMenu) {
+        changeInput('')
+      } else {
+        state.menuData = state.originMenu
+        state.isFocus = true
+        state.isEmpty = !(state.menuData.length > 0)
+        // console.log(state.historyMap)
+      }
     }
 
     const onblur = (value) => {
@@ -195,13 +239,35 @@ export default {
       }
     }
 
+    // 下拉 menu 滚动
+    const menuScroll = (that) => {
+      const botval = props.scrollBottomValue || 50
+
+      const scrollH = that.scrollHeight - botval - 10
+      // 元素滚动高度
+      const scrollT = that.scrollTop
+      // 盒子高度
+      const bottom = state.el.menuDom.offsetHeight
+      if (scrollT + bottom >= scrollH) {
+        // console.log(scrollH, bottom + scrollT)
+        if (typeof props.selectMenuScroll === 'function') {
+          props.selectMenuScroll(that)
+        } else {
+          scrollFn.scroll()
+        }
+        console.log('滚动到底啦 加入数据', state.menuData.length)
+        // console.log(state.menuData)
+      }
+    }
+
     return {
       ...toRefs(state),
       onSelected,
       changeInput,
       onfocus,
       onblur,
-      clear
+      clear,
+      menuScroll
     }
   }
 

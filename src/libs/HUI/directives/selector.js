@@ -73,6 +73,7 @@ function isShowMenu () {
   }
 }
 
+// 图标变化
 function changeIconEvent (e, className) {
   if (className.includes('icon-down')) {
     _vNode.oInputIcon.className = 'suffix-icon iconfont icon-search'
@@ -86,6 +87,19 @@ function changeIconEvent (e, className) {
   }
 }
 
+// 下拉菜单滚动
+function menuScroll (params) {
+  let timer
+  _vNode.menuDom.addEventListener('scroll', function () {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      instance.menuScroll(this)
+    }, 400)
+  }, false)
+}
+
 export default {
   mounted (el, ctx) {
     // console.log('[el]', el)
@@ -94,16 +108,20 @@ export default {
     const oPlaceholder = el.querySelector('.h-placeholder')
     const oInputIcon = el.querySelector('.suffix-icon')
     const oMemu = el.querySelector('.h-select-menu')
+    const menuDom = el.querySelector('ul.h-menu')
 
     // 将节点信息存储到 selector
     ctx.instance.el = {
       oInput,
       oPlaceholder,
       oInputIcon,
-      oMemu
+      oMemu,
+      menuDom
     }
 
     // 单选
     isNotMuitiple(el, ctx)
+    // 下拉菜单滚动
+    menuScroll(el, ctx)
   }
 }
