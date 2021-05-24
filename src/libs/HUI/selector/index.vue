@@ -43,7 +43,6 @@ import HSelectMenu from './HSelectMenu'
 import useNotMultipleFn from './js/notMultiple'
 import useSearchFn from './js/search'
 import useDoData from './js/dodata'
-import useMenuScroll from './js/menuScroll'
 export default {
   name: 'HSelector',
   directives: {
@@ -100,18 +99,19 @@ export default {
       type: Boolean,
       default: false
     },
-    // 远程加载 方法
+    // 自定义搜索方法
     remoteMethod: {
       type: Function
     },
 
-    // 滚动 方法
+    // 自定义滚动加载方法
     selectMenuScroll: {
       type: Function
     },
-    // 滚动距离
+    // 滚动距离,默认50
     scrollBottomValue: {
-      type: Number
+      type: Number,
+      default: 50
     }
   },
   setup (props, ctx) {
@@ -140,11 +140,11 @@ export default {
     const doData = useDoData(state, props, ctx)
     const selectedFn = useNotMultipleFn(state, props, ctx)
     const searchFn = useSearchFn(state, props, ctx)
-    const scrollFn = useMenuScroll(state, props, ctx)
 
     onMounted(() => {
     })
 
+    // 监听数据源, 如果发生改变则处理数据
     watch(() => props.data, ndata => {
       doData.getData(props.data)
       // 监听空值
@@ -178,22 +178,22 @@ export default {
 
       // 先查找历史记录
       const history = searchFn.searchHistory(val)
-      if (history.length > 0) {
-        return
-      }
+      if (history) return
+
+      // 如果没有历史记录 则检索menuData
       // 如果远程加载
       if (props.remote) {
         state.menuData = []
         state.originMenu = []
 
-        // state.menuMap = new Map()
-
         state.el.oMemu.style.display = 'block'
         if (typeof props.remoteMethod === 'function') {
+          // 调用自定义搜索方法
           props.remoteMethod(val)
         }
         state.searchValue = val
       } else {
+        // 非远程加载
         searchFn.search(val)
       }
     }
@@ -214,6 +214,7 @@ export default {
       if (props.autoShowMenu) {
         changeInput('')
       } else {
+        // 非自动展示
         state.menuData = state.originMenu
         state.isFocus = true
         state.isEmpty = !(state.menuData.length > 0)
@@ -248,12 +249,11 @@ export default {
       const scrollT = that.scrollTop
       // 盒子高度
       const bottom = state.el.menuDom.offsetHeight
+
       if (scrollT + bottom >= scrollH) {
-        // console.log(scrollH, bottom + scrollT)
+        //  滚动到底的时候 对外暴露方法
         if (typeof props.selectMenuScroll === 'function') {
           props.selectMenuScroll(that)
-        } else {
-          scrollFn.scroll()
         }
         console.log('滚动到底啦 加入数据', state.menuData.length)
         // console.log(state.menuData)

@@ -82,11 +82,12 @@ export default {
 
     function getList (key, loading) {
       loading && (state.loading = true)
-      axios.get('http://localhost:8080/config/datas/options.json').then(res => {
+      axios.get('/config/datas/options.json').then(res => {
         // console.log(res)
         state.options = res.data.filter(item => {
           return item.text.includes(key)
         })
+        state.value = 500
         loading && (state.loading = false)
       }).catch(err => {
         console.log(err)

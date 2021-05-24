@@ -21,16 +21,22 @@ function Fn (state, props, ctx) {
       state.isEmpty = Boolean(!state.menuData.length)
     },
     searchHistory: function (query) {
-      // console.log('[history]', query)
+      // console.log('[history 参数]', query)
       // console.log('则记录历史搜索记录', state.historyMap)
       const data = state.historyMap[query]
       // console.log('[ history data ]', data)
-      state.originMenu = data
-      state.menuData = state.originMenu
-      state.isEmpty = data && !(state.menuData.length > 0)
-      data && (state.el.oMemu.style.display = 'block')
 
-      return (data || [])
+      // 如果能查到历史 key
+      if (data) {
+        state.originMenu = data
+        state.menuData = state.originMenu
+        state.isEmpty = !(state.menuData.length > 0)
+        state.el.oMemu.style.display = 'block'
+      }
+
+      // console.log(Boolean(data))
+
+      return Boolean(data)
     }
   }
 }
