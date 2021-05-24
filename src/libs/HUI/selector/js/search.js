@@ -9,17 +9,18 @@ function Fn (state, props, ctx) {
         }, 200)
         return
       }
+      // 大小写转换
       const _value = value.toLowerCase()
+      // 过滤筛选
       state.menuData = state.originMenu.filter(item => {
         if (item.hLabel.toLowerCase().includes(_value)) {
-        // item.hText = item.hLabel.replace(new RegExp(_value, 'g'), `<span class="h-same-text">${_value}</span>`)
-        // console.log(item)
           return item
         }
       })
-
+      // 判断结构是否是空数组 刷新 empty 状态
       state.isEmpty = Boolean(!state.menuData.length)
     },
+
     searchHistory: function (query) {
       // console.log('[history 参数]', query)
       // console.log('则记录历史搜索记录', state.historyMap)

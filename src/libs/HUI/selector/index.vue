@@ -118,22 +118,13 @@ export default {
     const state = reactive({
       el: {}, // 用来存储节点
       searchValue: '', // 搜索值
-      menuData: [], // 数据
-      originMenu: [], // 备份数据
-      menuMap: new Map(), // 数据
+      menuData: [], // 数据 用以渲染
+      originMenu: [], // 备份数据 用以本地搜索
+      menuMap: new Map(), // 数据 对象类型,用以默认选中的筛选
       historyMap: new Map(), // 搜索历史记录
       selectedObj: {}, // 单选选中的
-      isFocus: false,
-      isEmpty: false,
-
-      // 分页加载
-      scrollInfo: {
-        data: [],
-        size: 20,
-        currentPage: 1,
-        count: 0,
-        pageCount: 1
-      }
+      isFocus: false, // 聚焦状态
+      isEmpty: false // 空状态
 
     })
 
@@ -172,9 +163,6 @@ export default {
     // 输入搜索
     const changeInput = (val) => {
       // console.log('[changeInput]', val)
-      // 将滚动加载的页面初始化
-      // state.scrollInfo.currentPage = 1
-      // state.scrollInfo.data = []
 
       // 先查找历史记录
       const history = searchFn.searchHistory(val)
