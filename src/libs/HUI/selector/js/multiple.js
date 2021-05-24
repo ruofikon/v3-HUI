@@ -83,6 +83,7 @@ function Fn (state, props, ctx) {
     // 对外导出 value
     changeValue: function () {
       const value = state.selectedTagsValue || []
+      // console.log('[对外导出]', value)
       ctx.emit('update:modelValue', value)
     },
 

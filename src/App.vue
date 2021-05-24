@@ -18,6 +18,9 @@
     <div class="pp">ppppppppppppppppppppppppp</div>
     </div>
 
+    <selects2 v-model="value4"></selects2>
+    <h1>{{value4}}</h1>
+
   </div>
 
 </template>
@@ -25,16 +28,19 @@
 import { onMounted, reactive, toRefs } from 'vue'
 
 import mySelect from './components/mySelect'
+import selects2 from './components/select2'
 export default {
 
   components: {
-    mySelect
+    mySelect,
+    selects2
   },
   setup (props) {
     const state = reactive({
       value1: '',
       value2: 4,
       value3: [],
+      value4: [3, 4],
       loading: false,
       options: [],
       options3: [

@@ -17,6 +17,8 @@
         type="text"
         class="h-trigger-input"
         v-model="value"
+        @input="changeInput"
+        @focus="onFocus"
       />
     </div>
       <!-- @input="changeInput"
@@ -64,7 +66,7 @@ export default {
         clearTimeout(state.timer)
       }
       state.timer = setTimeout(() => {
-        // ctx.emit('update:modelValue', value)
+        ctx.emit('update:modelValue', state.value)
         ctx.emit('changeInput', state.value)
         state.timer = null
       }, 400)
@@ -72,16 +74,8 @@ export default {
 
     // 聚焦的时候, 清除input值, 如果有选值则不派发更新
     const onFocus = () => {
-      state.value = []
+      state.value = ''
       ctx.emit('onfocus', state.value)
-    }
-
-    // 失焦的时候, 如果有记录的选值就赋值
-    const onBlur = (e) => {
-      console.log('eee', e)
-      setTimeout(() => {
-
-      }, 150)
     }
 
     // close
@@ -93,7 +87,6 @@ export default {
       ...toRefs(state),
       changeInput,
       onFocus,
-      onBlur,
       closeTag
     }
   }
