@@ -30,10 +30,6 @@ function Fn (state, props, ctx) {
       }
     },
 
-    // 计算selector 高度,
-    renderHeight: function () {
-    },
-
     // 清空
     clear: function () {
       state.selectedTags = []
@@ -90,7 +86,32 @@ function Fn (state, props, ctx) {
     // 默认选中
     _mounted: function () {
       if (props.modelValue) {
+        const selectedArr = props.modelValue
+        state.el.oPlaceholder.style.display = 'none'
 
+        // 将选中的勾选上 -- 单选
+        if (props.multiple) {
+          const selectedLabel = []
+          selectedArr.forEach(item => {
+            const isHave = state.menuMap[item]
+            if (isHave) {
+              selectedLabel.push(isHave)
+              console.log('[]', isHave)
+            } else {
+              // 如果找不到，则让 value作为key和值传入
+              const obj = { hValue: item, hLabel: item, hText: item }
+              obj[props.defaultPorp.value] = item
+              obj[props.defaultPorp.label] = item
+              console.log(obj)
+              selectedLabel.push(obj)
+            }
+          })
+
+          state.selectedTags = selectedLabel
+          state.selectedTagsValue = selectedArr
+
+          // 如果数据里面有这个传入key就默认选中
+        }
       }
     }
   }

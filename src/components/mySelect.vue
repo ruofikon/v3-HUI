@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1>{{label}}</h1>
+    <div class="ccc">----选中 {{ value }} ----</div>
       <h-selector
         class="my-select"
         v-model="value"
@@ -17,7 +18,7 @@
         </template>
       </h-selector>
       <!-- :autoShowMenu="false" -->
-      <h1>---- {{ value }} ----</h1>
+
     </div>
 </template>
 
@@ -79,5 +80,8 @@ export default {
 </script>
 
 <style>
-
+.ccc {
+  text-align: center;
+  margin-bottom: 20px;
+}
 </style>

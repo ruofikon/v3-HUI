@@ -178,6 +178,8 @@ export default {
     const stop = watch(() => props.data, ndata => {
       if (!props.multiple) {
         selectedFn._mounted() // 默认选中
+      } else {
+        multipleFn._mounted() // 默认选中
       }
       stop()
     })

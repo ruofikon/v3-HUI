@@ -4,22 +4,27 @@
     <mySelect v-model="value2" label="单选2"></mySelect>
 
     <div>
-      <h1>多选</h1>
+      <h1>多选 不收起下拉框</h1>
+      <div class="pp">{{value3}}</div>
       <h-selector
         class="my-select"
         v-model="value3"
         placeholder="请输入关键字搜索"
+
         :data="options3"
         :defaultPorp="{value: 'id', label: 'text'}"
         multiple
       >
         <!-- :autoShowMenu="false" -->
       </h-selector>
-    <div class="pp">ppppppppppppppppppppppppp</div>
+
     </div>
 
-    <selects2 v-model="value4"></selects2>
-    <h1>{{value4}}</h1>
+    <div>
+      <h1>多选 自动收起下拉框</h1>
+      <div class="pp">选中 -- {{value4}}</div>
+      <selects2 v-model="value4"></selects2>
+    </div>
 
   </div>
 
@@ -40,7 +45,7 @@ export default {
       value1: '',
       value2: 4,
       value3: [],
-      value4: [3, 4],
+      value4: [3, 4, 566],
       loading: false,
       options: [],
       options3: [
@@ -114,5 +119,6 @@ export default {
  }
  .pp {
    text-align: center;
+   margin-bottom: 20px;
  }
 </style>

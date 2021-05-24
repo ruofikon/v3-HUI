@@ -13,6 +13,7 @@
         :loading="loading"
         :remote-method="filterable"
       >
+      <!-- :autoShowMenu="false" -->
         <template #empty>
           <span>没有无数据呢</span>
         </template>
