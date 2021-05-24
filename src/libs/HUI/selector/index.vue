@@ -14,7 +14,10 @@
     <!-- h-trigger 多选-->
     <h-trigger
       v-if="multiple"
+      :selectedTags="selectedTags"
       :placeholder="placeholder"
+      @closeTag="closeTag"
+
     >
 
     </h-trigger>
@@ -25,6 +28,7 @@
       :empty="isEmpty"
       :loading="loading"
       :selectedObj="selectedObj"
+      :selectedTagsValue="selectedTagsValue"
       @onSelected="onSelected"
     >
 
@@ -48,6 +52,7 @@ import HInput from './HInput'
 import HSelectMenu from './HSelectMenu'
 import HTrigger from './HTrigger'
 import useNotMultipleFn from './js/notMultiple'
+import useMultipleFn from './js/multiple'
 import useSearchFn from './js/search'
 import useDoData from './js/dodata'
 export default {
@@ -131,6 +136,8 @@ export default {
       menuMap: new Map(), // 数据 对象类型,用以默认选中的筛选
       historyMap: new Map(), // 搜索历史记录
       selectedObj: {}, // 单选选中的
+      selectedTags: [], // 多选选中的项
+      selectedTagsValue: [], // 多选选中的项的value值
       isFocus: false, // 聚焦状态
       isEmpty: false // 空状态
 
@@ -138,9 +145,17 @@ export default {
 
     const doData = useDoData(state, props, ctx)
     const selectedFn = useNotMultipleFn(state, props, ctx)
+    const multipleFn = useMultipleFn(state, props, ctx)
     const searchFn = useSearchFn(state, props, ctx)
 
     onMounted(() => {
+      // 如果是本地数据
+      if (!props.remote) {
+        doData.getData(props.data)
+        // 监听空值
+        state.isEmpty = !(state.menuData.length > 0)
+        // console.log('如果是本地数据', props.data)
+      }
     })
 
     // 监听数据源, 如果发生改变则处理数据
@@ -149,6 +164,7 @@ export default {
       // 监听空值
       state.isEmpty = !(state.menuData.length > 0)
       // console.log('isEmpty', state.isEmpty)
+      // console.log('props.data', props.data)
       // selectedFn._mounted() // 默认选中
     })
 
@@ -201,7 +217,7 @@ export default {
       if (!props.multiple) {
         selectedFn.selected(optionItem) // 单选选中
       } else {
-
+        multipleFn.selected(optionItem)
       }
     }
 
@@ -238,6 +254,16 @@ export default {
       }
     }
 
+    // 多选删除tag
+    const closeTag = (tag) => {
+      multipleFn.addOrDelTags({ type: 'del', tagItem: tag })
+    }
+
+    // 隐藏下拉菜单
+    const hiddenMenu = () => {
+      state.el.oMemu.style.display = 'none'
+    }
+
     // 下拉 menu 滚动
     const menuScroll = (that) => {
       const botval = props.scrollBottomValue || 50
@@ -265,7 +291,9 @@ export default {
       onfocus,
       onblur,
       clear,
-      menuScroll
+      menuScroll,
+      closeTag,
+      hiddenMenu
     }
   }
 

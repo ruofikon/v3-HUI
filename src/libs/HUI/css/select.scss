@@ -63,12 +63,14 @@ $height: 40px;
 
 // icon
 .suffix-span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 0;
   right: 0;
   width: 30px;
   height: 100%;
-  text-align: center;
 }
 .suffix-icon {
   cursor: pointer;
@@ -147,5 +149,59 @@ $height: 40px;
 // 多选
 .h-trigger {
   min-height: $height;
+}
+//
+.h-trigger-input {
+  display: none;
+  min-width: 60px;
+  height: $height;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: $text-color;
+  border: 1px solid #000;
+}
+
+// tag
+.h-tags {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.h-span-tag {
+  display: flex;
+  justify-content: space-between;
+  height: 24px;
+  margin: 6px 0 0 6px;
+  line-height: 24px;
+  font-size: 14px;
+  background-color: #f0f2f5;
+  border-radius: 4px;
+  // white-space: nowrap;
+
+
+}
+.h-trigger-tags {
+  max-width: $width - 30;
+  background-color: #d6c4c4;
+}
+
+.h-tag-label {
+  padding: 0 6px;
+  // margin-right: 6px;
+  max-width: $width - 60;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tag.icon-close {
+  margin-right: 6px;
+  cursor: pointer;
+  color: #c0c4cc;
+}
+
+.tag.icon-close:hover {
+  color: #909399;
 }
 

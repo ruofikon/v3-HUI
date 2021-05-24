@@ -1,50 +1,42 @@
 <template>
-  <div>
-    <h-selector
-      class="my-select"
-      v-model="value"
-      placeholder="请输入关键字搜索"
-      :data="options"
-      :defaultPorp="{value: 'id', label: 'text'}"
-      remote
+  <div class="index">
+    <mySelect v-model="value1" label="单选1"></mySelect>
+    <mySelect v-model="value2" label="单选2"></mySelect>
 
-      :loading="loading"
-      :remote-method="filterable"
-    >
-      <template #empty>
-        <span>没有无数据呢</span>
-      </template>
-    </h-selector>
-  <!-- :autoShowMenu="false" -->
-    <h1>521521521521521521521521</h1>
-    <h1>---- {{ value }} ----</h1>
-
-    <h1>多选</h1>
-    <h-selector
-      class="my-select"
-      v-model="value2"
-      placeholder="请输入关键字搜索"
-      :data="options"
-      :defaultPorp="{value: 'id', label: 'text'}"
-      remote
-      multiple
-    >
-    </h-selector>
+    <div>
+      <h1>多选</h1>
+      <h-selector
+        class="my-select"
+        v-model="value3"
+        placeholder="请输入关键字搜索"
+        :data="options3"
+        :defaultPorp="{value: 'id', label: 'text'}"
+        multiple
+      >
+        <!-- :autoShowMenu="false" -->
+      </h-selector>
+    </div>
 
   </div>
 
 </template>
 <script>
 import { onMounted, reactive, toRefs } from 'vue'
-import axios from 'axios'
+
+import mySelect from './components/mySelect'
 export default {
+
+  components: {
+    mySelect
+  },
   setup (props) {
     const state = reactive({
-      value: '',
-      value2: [],
+      value1: 1,
+      value2: 4,
+      value3: [],
       loading: false,
       options: [],
-      options2: [
+      options3: [
         { id: '1', text: '我是ab' },
         { id: '2', text: '我是ab哈哈' },
         { id: '3', text: '我是aca按实际成' },
@@ -94,40 +86,23 @@ export default {
     })
 
     function getList (key, loading) {
-      loading && (state.loading = true)
-      axios.get('/config/datas/options.json').then(res => {
-        // console.log(res)
-        state.options = res.data.filter(item => {
-          return item.text.includes(key)
-        })
-        state.value = 2
-        loading && (state.loading = false)
-      }).catch(err => {
-        console.log(err)
-        loading && (state.loading = false)
-      })
-    }
 
-    function filterable (value) {
-      // console.log('[远程搜索]', value)
-      getList(value, true)
-      // setTimeout(() => {
-      //   state.options = state.options2.filter(item => {
-      //     return item.text.includes(value)
-      //   })
-      //   state.loading = false
-      // }, 1000)
     }
 
     return {
-      ...toRefs(state),
-      filterable
+      ...toRefs(state)
     }
   }
 }
 </script>
 <style lang="scss">
  .my-select {
-   margin: 100px 0 0 100px;
+   margin: 0 100px;
+ }
+  h1 {
+    text-align: center;
+  }
+ .index {
+   display: flex;
  }
 </style>

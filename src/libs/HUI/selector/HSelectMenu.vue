@@ -15,7 +15,7 @@
         :key="item.hValue"
         @click.stop="onSelected(item)"
       >
-      <span :class="[{'selected': item.hValue === selectedObj.hValue }]">
+      <span :class="[{'selected': (item.hValue === selectedObj.hValue) || (selectedTagsValue.includes(item.hValue)) }]">
         <slot :option="item"></slot>
       </span>
       </li>
@@ -32,10 +32,15 @@ export default {
       type: Array,
       default: () => []
     },
-    // 选中的值
+    // 单选选中的值
     selectedObj: {
       type: Object,
       default: () => ({})
+    },
+    // 多选选中的值
+    selectedTagsValue: {
+      type: Array,
+      default: () => []
     },
     empty: {
       typeof: Boolean,

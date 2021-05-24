@@ -3,12 +3,22 @@
     <!-- placeholder -->
     <div class="h-placeholder">{{placeholder}}</div>
 
-    <!-- input -->
-    <input
-      type="text"
-      class="h-select-input"
-      v-model="value"
-    />
+    <!-- tigger -->
+    <div class="h-trigger-tags">
+      <div class="h-tags" v-if="selectedTags.length" @click.stop="()=>{}">
+        <span class="h-span-tag" v-for="tag in selectedTags" :key="tag.hValue">
+          <span class="h-tag-label">{{tag.hText}}</span>
+          <i class="tag iconfont icon-close" @click="closeTag(tag)"></i>
+        </span>
+      </div>
+
+      <!-- input -->
+      <input
+        type="text"
+        class="h-trigger-input"
+        v-model="value"
+      />
+    </div>
       <!-- @input="changeInput"
       @focus="onFocus"
       @blur="onBlur" -->
@@ -26,13 +36,14 @@ export default {
   name: 'HTrigger',
   props: {
     placeholder: String,
-    selectedObj: {
-      type: Object,
-      default: () => ({})
-    },
+
     modelValue: {
       type: String,
       default: ''
+    },
+    selectedTags: {
+      type: Array,
+      default: () => []
     }
   },
   setup (props, ctx) {
@@ -61,7 +72,6 @@ export default {
 
     // 聚焦的时候, 清除input值, 如果有选值则不派发更新
     const onFocus = () => {
-      // console.log('[聚焦]', props.selectedObj)
       state.value = []
       ctx.emit('onfocus', state.value)
     }
@@ -69,19 +79,23 @@ export default {
     // 失焦的时候, 如果有记录的选值就赋值
     const onBlur = () => {
       setTimeout(() => {
-        // if (props.selectedObj.hLabel) {
-        //   state.value = props.selectedObj.hLabel
-        // }
+
       }, 150)
 
       ctx.emit('onblur')
+    }
+
+    // close
+    const closeTag = (item) => {
+      ctx.emit('closeTag', item)
     }
 
     return {
       ...toRefs(state),
       changeInput,
       onFocus,
-      onBlur
+      onBlur,
+      closeTag
     }
   }
 }
