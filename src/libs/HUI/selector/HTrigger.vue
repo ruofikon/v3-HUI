@@ -5,10 +5,10 @@
 
     <!-- tigger -->
     <div class="h-trigger-tags">
-      <div class="h-tags" v-if="selectedTags.length" @click.stop="()=>{}">
+      <div class="h-tags" v-if="selectedTags.length">
         <span class="h-span-tag" v-for="tag in selectedTags" :key="tag.hValue">
           <span class="h-tag-label">{{tag.hText}}</span>
-          <i class="tag iconfont icon-close" @click="closeTag(tag)"></i>
+          <i class="tag iconfont icon-close" @click.stop="closeTag(tag)"></i>
         </span>
       </div>
 
@@ -77,12 +77,11 @@ export default {
     }
 
     // 失焦的时候, 如果有记录的选值就赋值
-    const onBlur = () => {
+    const onBlur = (e) => {
+      console.log('eee', e)
       setTimeout(() => {
 
       }, 150)
-
-      ctx.emit('onblur')
     }
 
     // close

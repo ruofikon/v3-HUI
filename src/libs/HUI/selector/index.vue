@@ -1,47 +1,53 @@
 <template>
-  <div :class="['h-selector', {'is-focus': isFocus}]" v-focus>
-    <!-- h-input 单选 -->
-    <h-input
-      v-if="!multiple"
-      v-model="searchValue"
-      :placeholder="placeholder"
-      :selectedObj="selectedObj"
-      @changeInput="changeInput"
-      @onfocus="onfocus"
-      @onblur="onblur"
-    ></h-input>
+  <div class="h-select-comp"  v-focus @click.stop="()=>{}">
+    <div :class="['h-selector', {'is-focus': isFocus}]">
+      <!-- h-input 单选 -->
+      <h-input
+        v-if="!multiple"
+        v-model="searchValue"
+        :placeholder="placeholder"
+        :selectedObj="selectedObj"
+        @changeInput="changeInput"
+        @onfocus="onfocus"
+        @onblur="onblur"
+      ></h-input>
 
-    <!-- h-trigger 多选-->
-    <h-trigger
-      v-if="multiple"
-      :selectedTags="selectedTags"
-      :placeholder="placeholder"
-      @closeTag="closeTag"
+      <!-- h-trigger 多选-->
+      <h-trigger
+        v-if="multiple"
+        :selectedTags="selectedTags"
+        :placeholder="placeholder"
+        @closeTag="closeTag"
+        @changeInput="changeInput"
 
-    >
+      >
 
-    </h-trigger>
+      </h-trigger>
 
-    <!-- menu -->
-    <h-select-menu
-      :memu="menuData"
-      :empty="isEmpty"
-      :loading="loading"
-      :selectedObj="selectedObj"
-      :selectedTagsValue="selectedTagsValue"
-      @onSelected="onSelected"
-    >
+    </div>
+    <div class="h-menu-box">
+      <!-- menu -->
+      <h-select-menu
+        :memu="menuData"
+        :empty="isEmpty"
+        :loading="loading"
+        :selectedObj="selectedObj"
+        :selectedTagsValue="selectedTagsValue"
+        @onSelected="onSelected"
+      >
 
-      <template #empty>
-         <slot name="empty">无数据</slot>
-      </template>
-      <template #loading>
-         <slot name="loading">加载中</slot>
-      </template>
-      <template #default="scope">
-        <slot :option="scope.option">{{scope.option.hText}}</slot>
-      </template>
-    </h-select-menu>
+        <template #empty>
+          <slot name="empty">无数据</slot>
+        </template>
+        <template #loading>
+          <slot name="loading">加载中</slot>
+        </template>
+        <template #default="scope">
+          <slot :option="scope.option">{{scope.option.hText}}</slot>
+        </template>
+      </h-select-menu>
+    </div>
+
   </div>
 </template>
 
@@ -188,7 +194,7 @@ export default {
 
     // 输入搜索
     const changeInput = (val) => {
-      // console.log('[changeInput]', val)
+      console.log('[changeInput]', val)
 
       // 先查找历史记录
       const history = searchFn.searchHistory(val)
@@ -241,7 +247,7 @@ export default {
       if (!props.multiple) {
         selectedFn.blur()
       } else {
-
+        multipleFn.blur()
       }
     }
 
@@ -250,7 +256,7 @@ export default {
       if (!props.multiple) {
         selectedFn.clear()
       } else {
-
+        multipleFn.clear()
       }
     }
 

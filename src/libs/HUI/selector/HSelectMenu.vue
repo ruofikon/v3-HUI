@@ -1,8 +1,6 @@
 <template>
   <div class="h-select-menu">
-
     <ul class="h-menu">
-
       <li class="empty-item" v-show="empty && !loading">
         <slot name="empty"></slot>
       </li>
@@ -13,7 +11,7 @@
       <li class="h-menu-item"
         v-for="item in memu"
         :key="item.hValue"
-        @click.stop="onSelected(item)"
+        @click.stop="onSelected($event, item)"
       >
       <span :class="[{'selected': (item.hValue === selectedObj.hValue) || (selectedTagsValue.includes(item.hValue)) }]">
         <slot :option="item"></slot>
@@ -53,7 +51,9 @@ export default {
 
   },
   setup (props, ctx) {
-    const onSelected = (item) => {
+    const onSelected = (e, item) => {
+      e = e || window.event
+      e.preventDefault()
       ctx.emit('onSelected', item)
     }
 

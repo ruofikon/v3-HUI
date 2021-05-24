@@ -15,6 +15,7 @@
       >
         <!-- :autoShowMenu="false" -->
       </h-selector>
+    <div class="pp">ppppppppppppppppppppppppp</div>
     </div>
 
   </div>
@@ -31,16 +32,16 @@ export default {
   },
   setup (props) {
     const state = reactive({
-      value1: 1,
+      value1: '',
       value2: 4,
       value3: [],
       loading: false,
       options: [],
       options3: [
         { id: '1', text: '我是ab' },
-        { id: '2', text: '我是ab哈哈' },
-        { id: '3', text: '我是aca按实际成' },
-        { id: '4', text: '我是Ajj爱吃' },
+        { id: '2', text: '哈' },
+        { id: '3', text: '成' },
+        { id: '4', text: '我' },
         { id: '5', text: '我是ab为是问' },
         { id: '6', text: '我是abd我前端群无多哈哈哈哈哈哈哈哈哈哈哈' },
         { id: '7', text: '我是abd汽车全额去' },
@@ -104,5 +105,8 @@ export default {
   }
  .index {
    display: flex;
+ }
+ .pp {
+   text-align: center;
  }
 </style>

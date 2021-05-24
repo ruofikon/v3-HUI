@@ -3,7 +3,6 @@ function Fn (state, props, ctx) {
 
     // 选中 导出value 值
     selected: function (optionItem) {
-      // console.log('這是多选选中', optionItem)
       // 先判断是否已经选择, 如果已有则删除
       if (state.selectedTagsValue.includes(optionItem.hValue)) {
         this.addOrDelTags({ type: 'del', tagItem: optionItem })
@@ -14,16 +13,16 @@ function Fn (state, props, ctx) {
 
       // 清空input值
       state.searchValue = ''
+      state.el.oInput.value = ''
       // 导出 value 值
       this.changeValue()
 
       // 如果自动展开下拉菜单则不关闭 否则延迟关闭下来菜单,避免拿不到值
+      state.el.oInput.focus()
       if (props.autoShowMenu) {
-        state.el.oInput.focus()
-        state.el.oMemu.style.display = 'block'
-        // setTimeout(() => {
-        //   // input聚焦不变
-        // }, 150)
+        setTimeout(() => {
+          state.el.oMemu.style.display = 'block'
+        }, 150)
       } else {
         setTimeout(() => {
           state.el.oMemu.style.display = 'none'
@@ -33,40 +32,18 @@ function Fn (state, props, ctx) {
 
     // 计算selector 高度,
     renderHeight: function () {
-      // console.log('计算高度renderHeight =>', state.el.el.offsetHeight)
-      state.el.oMemu.style.top = state.el.el.offsetHeight + 10 + 'px'
     },
 
     // 清空
     clear: function () {
-      // // 清除input值 选中对象
-      // state.searchValue = ''
-      // state.selectedObj = {}
-
-      // // 展示placeholder 下来icon 隐藏input
-      // state.el.oPlaceholder.style.display = 'block'
-      // state.el.oInput.style.display = 'none'
-      // state.el.oInputIcon.className = 'suffix-icon iconfont icon-down'
-
-      // // 导出value 值
-      // this.changeValue()
+      state.selectedTags = []
+      state.selectedTagsValue = []
+      this.changeValue()
     },
 
     // 失焦
     blur: function () {
-      // // 如果selected 里面没有值,则清空input值
-      // if (!state.selectedObj.hValue) {
-      //   state.searchValue = ''
-      // }
 
-      // // 延迟 避免选中失焦时拿不到值
-      // setTimeout(() => {
-      //   // 如果input没有值 并且之前未选中 则显示placeholder
-      //   if (!state.searchValue && !state.selectedObj.hValue) {
-      //     state.el.oPlaceholder.style.display = 'block'
-      //     state.el.oInput.style.display = 'none'
-      //   }
-      // }, 200)
     },
 
     /**
@@ -79,6 +56,7 @@ function Fn (state, props, ctx) {
       if (options.type === 'add') {
         state.selectedTags.push(options.tagItem)
         state.selectedTagsValue.push(options.tagItem.hValue)
+        state.el.oInputIcon.className = 'suffix-icon iconfont icon-close'
 
         if (!props.autoShowMenu) {
           state.el.oMemu.style.display = 'none'
@@ -88,19 +66,24 @@ function Fn (state, props, ctx) {
         state.selectedTags = state.selectedTags.filter(item => item.hValue !== options.tagItem.hValue)
         state.selectedTagsValue = state.selectedTagsValue.filter(value => value !== options.tagItem.hValue)
 
-        // 重新计算高度
+        // 如果清空了 icon变化， placeholder显示
+        const len = state.selectedTagsValue.length
+        if (!len) {
+          state.el.oInputIcon.className = 'suffix-icon iconfont icon-down'
+        }
+
         setTimeout(() => {
-          this.renderHeight()
           state.el.oMemu.style.display = 'none'
           state.el.oInput.style.display = 'none'
+          !len && (state.el.oPlaceholder.style.display = 'block')
         }, 150)
       }
     },
 
     // 对外导出 value
     changeValue: function () {
-      // const value = state.selectedObj.hValue || ''
-      // ctx.emit('update:modelValue', value)
+      const value = state.selectedTagsValue || []
+      ctx.emit('update:modelValue', value)
     },
 
     // 默认选中

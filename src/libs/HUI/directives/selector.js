@@ -9,22 +9,14 @@ function isNotMultiple (el, ctx) {
   const oMemu = el.querySelector('.h-select-menu')
   const menuDom = el.querySelector('ul.h-menu')
   ctx.instance.el = {
+    el,
     oInput,
     oPlaceholder,
     oInputIcon,
     oMemu,
     menuDom
   }
-
-  // el 点击 隐藏placeholder 显示input 聚焦
-  el.addEventListener('click', function () {
-    oPlaceholder.style.display = 'none'
-    oInput.style.display = 'block'
-    oInput.focus()
-    // console.log('点击 隐藏placeholder', oInput)
-    oInputIcon.className = 'suffix-icon iconfont icon-search'
-    isShowMenu(oMemu, ctx.instance)
-  }, false)
+  const options = { ...ctx.instance.el, instance: ctx.instance }
 
   // oInput 失焦的时候 显示 placeholder 和 icon
   oInput.addEventListener('blur', function () {
@@ -39,43 +31,10 @@ function isNotMultiple (el, ctx) {
     oInputIcon.className = 'suffix-icon iconfont icon-search'
   }, false)
 
-  // oInput hover
-  oInput.addEventListener('mouseenter', function () {
-    // console.log('[鼠标移入]', oInput.value)
-    if (oInput.value) {
-      oInputIcon.className = 'suffix-icon iconfont icon-close'
-    }
-  }, false)
-  // oInput hover
-  oInput.addEventListener('mouseleave', function () {
-    if (oInput.value) {
-      // console.log('[dowm]', oInput.value)
-      oInputIcon.className = 'suffix-icon iconfont icon-down'
-    } else {
-      oInputIcon.className = 'suffix-icon iconfont icon-search'
-    }
-  }, false)
+  elMouseEvent(options)
 
-  // oInputIcon hover
-  oInputIcon.addEventListener('mouseenter', function () {
-    if (oInput.value) {
-      oInputIcon.className = 'suffix-icon iconfont icon-close'
-    }
-  }, false)
-
-  // oInputIcon hover
-  oInputIcon.addEventListener('mouseleave', function () {
-    if (oInput.value) {
-      oInputIcon.className = 'suffix-icon iconfont icon-down'
-    } else {
-      oInputIcon.className = 'suffix-icon iconfont icon-search'
-    }
-  }, false)
-
-  // oInputIcon cilck
-  oInputIcon.addEventListener('click', function (e) {
-    changeIconEvent(e, this, oInput, ctx.instance)
-  }, false)
+  // icon hover事件
+  oInputIconMouseEvent(options)
 }
 
 // 多选
@@ -93,30 +52,36 @@ function multiple (el, ctx) {
     oMemu,
     menuDom
   }
+  const options = { ...ctx.instance.el, instance: ctx.instance }
   // console.log('多选', ctx.instance)
 
-  // el 点击 隐藏placeholder 显示input 聚焦
-  el.addEventListener('click', function () {
-    oPlaceholder.style.display = 'none'
-    oInput.style.display = 'block'
-    oInput.focus()
-    oInputIcon.className = 'suffix-icon iconfont icon-search'
-    isShowMenu(oMemu, ctx.instance)
-  }, false)
-
-  // input 聚焦的时候, 计算高度,重新定位下拉菜单
+  // input 聚焦的时候
   oInput.addEventListener('focus', function () {
-    // console.log('计算高度addEventListener', el.offsetHeight)
-    oMemu.style.top = el.offsetHeight + 10 + 'px'
   }, false)
 
-  // input 失焦的时候,关闭下拉菜单
+  // input 失焦的时候 调用失焦方法
   oInput.addEventListener('blur', function () {
-    // console.log('失焦的时候,关闭下拉菜单')
-    setTimeout(() => {
-      ctx.instance.hiddenMenu()
-    }, 100)
+    ctx.instance.onblur()
   }, false)
+
+  // 监听 下拉区域之外的点击事件 隐藏下拉框 隐藏 input
+  document.addEventListener('click', function () {
+    // console.log('下拉区域之外的点击事件')
+    oMemu.style.display = 'none'
+    oInput.style.display = 'none'
+    oInputIcon.className = 'suffix-icon iconfont icon-down'
+    oInput.value = ''
+    if (ctx.instance.multiple) {
+      !ctx.instance.selectedTagsValue.length && (oPlaceholder.style.display = 'block')
+    } else {
+
+    }
+  }, false)
+
+  elMouseEvent(options)
+
+  // icon hover事件
+  oInputIconMouseEvent(options)
 }
 // 是否自动展示 menu
 function isShowMenu (oMemu, instance) {
@@ -125,16 +90,100 @@ function isShowMenu (oMemu, instance) {
   }
 }
 
+// el hover 事件
+
+function elMouseEvent (options) {
+  // el 点击 隐藏placeholder 显示input 聚焦
+  options.el.addEventListener('click', function () {
+    options.oPlaceholder.style.display = 'none'
+    options.oInput.style.display = 'block'
+    options.oInput.focus()
+    options.oInputIcon.className = 'suffix-icon iconfont icon-search'
+    isShowMenu(options.oMemu, options.instance)
+  }, false)
+  // el hover
+  options.el.addEventListener('mouseenter', function () {
+    // 单选且有值
+    const _one = !options.instance.multiple && options.oInput.value
+    // 多选且有值
+    const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
+    if (_one) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+    } else if (_multiple) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+    }
+  }, false)
+
+  options.el.addEventListener('mouseleave', function () {
+    // 单选且有值
+    const _one = !options.instance.multiple && options.oInput.value
+    // 多选且有值
+    const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
+    if (_one) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+    } else if (_multiple) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      if (options.oInput.style.display === 'none') {
+        options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      }
+    }
+  }, false)
+}
+
+// 图标 hover 事件
+function oInputIconMouseEvent (options) {
+  // oInputIcon hover
+  options.oInputIcon.addEventListener('mouseenter', function () {
+    // 单选且有值
+    const _one = !options.instance.multiple && options.oInput.value
+    // 多选且有值
+    const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
+    if (_one) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+    } else if (_multiple) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+    }
+  }, false)
+
+  // oInputIcon hover
+  options.oInputIcon.addEventListener('mouseleave', function () {
+    // 单选且有值
+    const _one = !options.instance.multiple && options.oInput.value
+    // 多选且有值
+    const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
+    if (_one) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+    } else if (_multiple) {
+      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      if (options.oInput.style.display === 'none') {
+        options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      }
+    }
+  }, false)
+
+  // oInputIcon cilck
+  options.oInputIcon.addEventListener('click', function (e) {
+    changeIconEvent(e, this, options)
+  }, false)
+}
+
 // 图标变化
-function changeIconEvent (e, that, oInput, instance) {
+function changeIconEvent (e, that, options) {
   if (that.className.includes('icon-down')) {
     that.className = 'suffix-icon iconfont icon-search'
-    oInput.focus()
+    options.oInput.focus()
   } else {
     window.event ? window.event.cancelBubble = true : e.stopPropagation()
     if (that.className.includes('icon-close')) {
-      instance.clear()
-      oInput.blur()
+      options.instance.clear()
+      that.className = 'suffix-icon iconfont icon-down'
+      options.oInput.style.display = 'none'
+      options.oPlaceholder.style.display = 'block'
+      options.oMemu.style.display = 'none'
+    } else if (that.className.includes('icon-search')) {
+      // 调用搜索方法
+      // console.log(oInput.value)
+      options.instance.changeInput(options.oInput.value)
     }
   }
 }
