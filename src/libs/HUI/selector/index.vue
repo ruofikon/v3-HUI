@@ -1,17 +1,23 @@
 <template>
   <div :class="['h-selector', {'is-focus': isFocus}]" v-focus>
-    <!-- input -->
+    <!-- h-input 单选 -->
     <h-input
-      v-show="!multiple"
+      v-if="!multiple"
       v-model="searchValue"
       :placeholder="placeholder"
       :selectedObj="selectedObj"
       @changeInput="changeInput"
       @onfocus="onfocus"
       @onblur="onblur"
+    ></h-input>
+
+    <!-- h-trigger 多选-->
+    <h-trigger
+      v-if="multiple"
+      :placeholder="placeholder"
     >
 
-    </h-input>
+    </h-trigger>
 
     <!-- menu -->
     <h-select-menu
@@ -40,6 +46,7 @@ import { reactive, toRefs, watch, onMounted } from 'vue'
 import focus from '../directives/selector'
 import HInput from './HInput'
 import HSelectMenu from './HSelectMenu'
+import HTrigger from './HTrigger'
 import useNotMultipleFn from './js/notMultiple'
 import useSearchFn from './js/search'
 import useDoData from './js/dodata'
@@ -50,7 +57,8 @@ export default {
   },
   components: {
     HInput,
-    HSelectMenu
+    HSelectMenu,
+    HTrigger
   },
   props: {
     placeholder: {
@@ -84,7 +92,7 @@ export default {
 
     // 值
     modelValue: {
-      type: [String, Number],
+      type: [String, Number, Array],
       default: ''
     },
 
@@ -146,7 +154,9 @@ export default {
 
     // 默认选中只需要执行一次
     const stop = watch(() => props.data, ndata => {
-      selectedFn._mounted() // 默认选中
+      if (!props.multiple) {
+        selectedFn._mounted() // 默认选中
+      }
       stop()
     })
 
@@ -264,31 +274,7 @@ export default {
 
 <style lang='scss'>
 @import '../init.css';
-@import '../theme-color.scss';
 @import '../font/iconfont.css';
+@import '../css/select.scss';
 
-.h-selector {
-  position: relative;
-  width: 280px;
-  border: 1px solid $border-color;
-  border-radius: 4px;
-  color: $text-color;
-  transition: border-color .2s;
-  -webkit-transition: border-color .2s;
-  -o-transition: border-color .2s;
-  -moz-transition: border-color .2s;
-}
-.h-selector.is-focus {
-  border-color: $theme-color;
-}
-.h-selector:hover {
-  border-color: $theme-color;
-}
-.iconfont {
-  color: $placeholder-color;
-}
-
-.h-same-text {
-  color: $theme-color;
-}
 </style>

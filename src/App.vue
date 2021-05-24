@@ -19,6 +19,18 @@
     <h1>521521521521521521521521</h1>
     <h1>---- {{ value }} ----</h1>
 
+    <h1>多选</h1>
+    <h-selector
+      class="my-select"
+      v-model="value2"
+      placeholder="请输入关键字搜索"
+      :data="options"
+      :defaultPorp="{value: 'id', label: 'text'}"
+      remote
+      multiple
+    >
+    </h-selector>
+
   </div>
 
 </template>
@@ -29,6 +41,7 @@ export default {
   setup (props) {
     const state = reactive({
       value: '',
+      value2: [],
       loading: false,
       options: [],
       options2: [
@@ -87,7 +100,7 @@ export default {
         state.options = res.data.filter(item => {
           return item.text.includes(key)
         })
-        state.value = 500
+        state.value = 2
         loading && (state.loading = false)
       }).catch(err => {
         console.log(err)

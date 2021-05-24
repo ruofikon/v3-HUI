@@ -13,7 +13,7 @@ function Fn (state, props, ctx) {
       // 延迟关闭下来菜单,避免拿不到值
       setTimeout(() => {
         state.el.oMemu.style.display = 'none'
-      }, 100)
+      }, 150)
     },
 
     // 清空
@@ -67,7 +67,7 @@ function Fn (state, props, ctx) {
           if (isHave) {
             state.selectedObj = isHave
             state.searchValue = state.selectedObj.hLabel
-            console.log(state.selectedObj)
+            // console.log(state.selectedObj)
           } else {
             // 没有就展示placeholder
             state.el.oPlaceholder.style.display = 'block'
