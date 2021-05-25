@@ -2,6 +2,11 @@
 function Fn (state, props, ctx) {
   return {
     getData: function (data) {
+      if (!Array.isArray(data)) {
+        state.menuData = []
+        state.originMenu = state.menuData
+        return
+      }
       const _data = JSON.parse(JSON.stringify(data))
       const value = props.defaultPorp.value
       const label = props.defaultPorp.label

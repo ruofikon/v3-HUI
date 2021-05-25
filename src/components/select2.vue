@@ -13,7 +13,6 @@
         :loading="loading"
         :remote-method="filterable"
       >
-      <!-- :autoShowMenu="false" -->
         <template #empty>
           <span>没有无数据呢</span>
         </template>
@@ -61,6 +60,7 @@ export default {
         state.value = props.modelValue
       }).catch(err => {
         console.log(err)
+        state.options = []
         loading && (state.loading = false)
       })
     }

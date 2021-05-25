@@ -1,12 +1,12 @@
 @import '../theme-color.scss';
 $width: 280px;
-$height: 40px;
+$height: 38px;
 
 @mixin placeholder {
   .h-placeholder {
-    height: $height;
+    height: $height - 4;
     padding-left: 15px;
-    line-height: $height;
+    line-height: $height - 4;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -15,21 +15,22 @@ $height: 40px;
 }
 
 // selector
-.h-selector {
+.h-select {
   position: relative;
   width: $width;
   border: 1px solid $border-color;
   border-radius: 4px;
   color: $text-color;
+  overflow: hidden;
   transition: border-color .2s;
   -webkit-transition: border-color .2s;
   -o-transition: border-color .2s;
   -moz-transition: border-color .2s;
 }
-.h-selector.is-focus {
+.h-select.is-focus {
   border-color: $theme-color;
 }
-.h-selector:hover {
+.h-select:hover {
   border-color: $theme-color;
 }
 .iconfont {
@@ -90,13 +91,14 @@ $height: 40px;
   top: 10px;
   left: 0;
   width: 100%;
-  padding: 6px 0;
+  padding: 2px 0;
   overflow: hidden;
   border: 1px solid $border-color;
   border-radius: 4px;
   background-color: #fff;
   z-index: 9999;
   box-shadow: 0 0px 1px 0;
+  color: $text-color;
 
 }
 
@@ -150,14 +152,15 @@ $height: 40px;
 
 // 多选
 .h-trigger {
-  min-height: $height;
+  min-height: $height - 4;
+  padding: 2px 0;
 }
 //
 .h-trigger-input {
   display: none;
   flex: 1;
   min-width: 60px;
-  height: $height;
+  height: $height - 4;
   padding-left: 14px;
   margin-left: 1px;
   white-space: nowrap;
@@ -170,28 +173,28 @@ $height: 40px;
 .h-tags {
   display: flex;
   flex-wrap: wrap;
-  padding-bottom: 6px;
+  // padding-bottom: 6px;
 }
 
 .h-span-tag {
   display: flex;
   justify-content: space-between;
-  height: 24px;
-  margin: 6px 0 0 6px;
-  line-height: 24px;
+  height: 28px;
+  line-height: 28px;
   font-size: 14px;
   background-color: #f0f2f5;
   border-radius: 4px;
-  // white-space: nowrap;
-
-
+  margin: 2px 0 2px 6px;
 }
+
 .h-trigger-tags {
-  max-width: $width - 30;
-  // background-color: #d6c4c4;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
   overflow: hidden;
+  max-width: $width - 30;
+  // min-height: 40px;
+  // padding: 6px 0;
 }
 
 .h-tag-label {
@@ -203,13 +206,13 @@ $height: 40px;
   text-overflow: ellipsis;
 }
 
-.tag.icon-close {
+.tag.h-icon-close {
   margin-right: 6px;
   cursor: pointer;
   color: #c0c4cc;
 }
 
-.tag.icon-close:hover {
+.tag.h-icon-close:hover {
   color: #909399;
 }
 

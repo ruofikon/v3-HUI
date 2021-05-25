@@ -1,6 +1,6 @@
 <template>
-  <div class="h-select-comp"  v-focus @click.stop="()=>{}">
-    <div :class="['h-selector', {'is-focus': isFocus}]">
+  <div class="h-selector"  v-focus @click.stop="()=>{}">
+    <div :class="['h-select', {'is-focus': isFocus}]">
       <!-- h-input 单选 -->
       <h-input
         v-if="!multiple"
@@ -19,6 +19,7 @@
         :placeholder="placeholder"
         @closeTag="closeTag"
         @changeInput="changeInput"
+        @onfocus="onfocus"
 
       >
 
@@ -37,7 +38,7 @@
       >
 
         <template #empty>
-          <slot name="empty">无数据</slot>
+          <slot name="empty">{{noMatchText2}}</slot>
         </template>
         <template #loading>
           <slot name="loading">加载中</slot>
@@ -127,10 +128,29 @@ export default {
     selectMenuScroll: {
       type: Function
     },
+
+    // 是否自定义输入事件
+    customInput: {
+      type: Boolean,
+      default: false
+    },
+
     // 滚动距离,默认50
     scrollBottomValue: {
       type: Number,
       default: 50
+    },
+
+    // data 无数据时显示文本
+    emptyText: {
+      type: String,
+      default: '无数据'
+    },
+
+    // data 筛选无匹配数据时显示文本
+    noMatchText: {
+      type: String,
+      default: '无匹配数据'
     }
   },
   setup (props, ctx) {
@@ -145,7 +165,8 @@ export default {
       selectedTags: [], // 多选选中的项
       selectedTagsValue: [], // 多选选中的项的value值
       isFocus: false, // 聚焦状态
-      isEmpty: false // 空状态
+      isEmpty: false, // 空状态
+      noMatchText2: props.emptyText // 无数据时显示
 
     })
 
@@ -169,13 +190,15 @@ export default {
       doData.getData(props.data)
       // 监听空值
       state.isEmpty = !(state.menuData.length > 0)
-      // console.log('isEmpty', state.isEmpty)
-      // console.log('props.data', props.data)
       // selectedFn._mounted() // 默认选中
     })
 
     // 默认选中只需要执行一次
     const stop = watch(() => props.data, ndata => {
+      if (ndata.length > 0) {
+        state.noMatchText2 = props.noMatchText
+        state.historyMap[''] = state.menuData // 搜索空时返回全部
+      }
       if (!props.multiple) {
         selectedFn._mounted() // 默认选中
       } else {
@@ -196,10 +219,15 @@ export default {
 
     // 输入搜索
     const changeInput = (val) => {
-      console.log('[changeInput]', val)
+      // console.log('[changeInput]', val)
+      if (props.customInput) {
+        ctx.emit('changeInputValue', val)
+        return
+      }
 
       // 先查找历史记录
       const history = searchFn.searchHistory(val)
+      // console.log('历史搜索')
       if (history) return
 
       // 如果没有历史记录 则检索menuData
@@ -230,6 +258,8 @@ export default {
     }
 
     const onfocus = (value) => {
+      ctx.emit('onFocus')
+      // console.log(state.historyMap)
       // state.isEmpty = false
 
       // 如果自动展示， 则聚焦的时候暴露搜索方法
@@ -265,6 +295,7 @@ export default {
     // 多选删除tag
     const closeTag = (tag) => {
       multipleFn.addOrDelTags({ type: 'del', tagItem: tag })
+      ctx.emit('closeTag', tag)
     }
 
     // 隐藏下拉菜单

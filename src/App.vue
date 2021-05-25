@@ -31,7 +31,7 @@
 </template>
 <script>
 import { onMounted, reactive, toRefs } from 'vue'
-
+import axios from 'axios'
 import mySelect from './components/mySelect'
 import selects2 from './components/select2'
 export default {
@@ -98,11 +98,23 @@ export default {
     })
 
     function getList (key, loading) {
-
+      loading && (state.loading = true)
+      axios.get('/config/datas/options.json').then(res => {
+        console.log('[select3]', res)
+        state.options3 = res.data.filter(item => {
+          return item.text.includes(key)
+        })
+        loading && (state.loading = false)
+      }).catch(err => {
+        console.log(err)
+        state.options3 = []
+        loading && (state.loading = false)
+      })
     }
 
     return {
-      ...toRefs(state)
+      ...toRefs(state),
+      getList
     }
   }
 }
@@ -116,6 +128,7 @@ export default {
   }
  .index {
    display: flex;
+   flex-wrap: wrap;
  }
  .pp {
    text-align: center;

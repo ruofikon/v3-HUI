@@ -9,7 +9,6 @@
         :data="options"
         :defaultPorp="{value: 'id', label: 'text'}"
         remote
-
         :loading="loading"
         :remote-method="filterable"
       >

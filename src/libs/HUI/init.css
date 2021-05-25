@@ -3,6 +3,9 @@ div, ul, li, i, span, input {
   padding: 0;
   list-style: none;
   box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -o-box-sizing: border-box;
+  -moz-box-sizing: border-box;
 }
 .clearfix::after {
   content: "";

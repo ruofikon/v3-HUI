@@ -14,7 +14,7 @@
 
     <!-- suffix-span -->
     <span class="suffix-span">
-      <i class="suffix-icon iconfont icon-down"></i>
+      <i class="suffix-icon iconfont h-icon-down"></i>
     </span>
 
   </div>
@@ -72,7 +72,7 @@ export default {
         if (props.selectedObj.hLabel) {
           state.value = props.selectedObj.hLabel
         }
-      }, 150)
+      }, 200)
 
       ctx.emit('onblur')
     }

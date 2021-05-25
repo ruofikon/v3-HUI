@@ -22,13 +22,13 @@ function isNotMultiple (el, ctx) {
   oInput.addEventListener('blur', function () {
     setTimeout(() => {
       oMemu.style.display = 'none'
-      oInputIcon.className = 'suffix-icon iconfont icon-down'
+      oInputIcon.className = 'suffix-icon iconfont h-icon-down'
     }, 100)
   }, false)
 
   // oInput 聚焦的时候 显示 search-icon
   oInput.addEventListener('focus', function () {
-    oInputIcon.className = 'suffix-icon iconfont icon-search'
+    oInputIcon.className = 'suffix-icon iconfont h-icon-search'
   }, false)
 
   elMouseEvent(options)
@@ -69,7 +69,7 @@ function multiple (el, ctx) {
     // console.log('下拉区域之外的点击事件')
     oMemu.style.display = 'none'
     oInput.style.display = 'none'
-    oInputIcon.className = 'suffix-icon iconfont icon-down'
+    oInputIcon.className = 'suffix-icon iconfont h-icon-down'
     oInput.value = ''
     if (ctx.instance.multiple) {
       !ctx.instance.selectedTagsValue.length && (oPlaceholder.style.display = 'block')
@@ -95,12 +95,19 @@ function isShowMenu (oMemu, instance) {
 function elMouseEvent (options) {
   // el 点击 隐藏placeholder 显示input 聚焦
   options.el.addEventListener('click', function () {
+    // 先将其他下拉框隐藏,再打开自己的
+    const otherMenuDrop = document.querySelectorAll('.h-select-menu')
+    for (let i = 0; i < otherMenuDrop.length; i++) {
+      otherMenuDrop[i].style.display = 'none'
+    }
+
     options.oPlaceholder.style.display = 'none'
     options.oInput.style.display = 'block'
     options.oInput.focus()
-    options.oInputIcon.className = 'suffix-icon iconfont icon-search'
+    options.oInputIcon.className = 'suffix-icon iconfont h-icon-search'
     isShowMenu(options.oMemu, options.instance)
   }, false)
+
   // el hover
   options.el.addEventListener('mouseenter', function () {
     // 单选且有值
@@ -108,9 +115,9 @@ function elMouseEvent (options) {
     // 多选且有值
     const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
     if (_one) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-close'
     } else if (_multiple) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-close'
     }
   }, false)
 
@@ -120,11 +127,11 @@ function elMouseEvent (options) {
     // 多选且有值
     const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
     if (_one) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-down'
     } else if (_multiple) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-close'
       if (options.oInput.style.display === 'none') {
-        options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+        options.oInputIcon.className = 'suffix-icon iconfont h-icon-down'
       }
     }
   }, false)
@@ -139,9 +146,9 @@ function oInputIconMouseEvent (options) {
     // 多选且有值
     const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
     if (_one) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-close'
     } else if (_multiple) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-close'
     }
   }, false)
 
@@ -152,11 +159,11 @@ function oInputIconMouseEvent (options) {
     // 多选且有值
     const _multiple = options.instance.multiple && options.instance.selectedTagsValue.length
     if (_one) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-down'
     } else if (_multiple) {
-      options.oInputIcon.className = 'suffix-icon iconfont icon-close'
+      options.oInputIcon.className = 'suffix-icon iconfont h-icon-close'
       if (options.oInput.style.display === 'none') {
-        options.oInputIcon.className = 'suffix-icon iconfont icon-down'
+        options.oInputIcon.className = 'suffix-icon iconfont h-icon-down'
       }
     }
   }, false)
@@ -169,18 +176,18 @@ function oInputIconMouseEvent (options) {
 
 // 图标变化
 function changeIconEvent (e, that, options) {
-  if (that.className.includes('icon-down')) {
-    that.className = 'suffix-icon iconfont icon-search'
+  if (that.className.includes('h-icon-down')) {
+    that.className = 'suffix-icon iconfont h-icon-search'
     options.oInput.focus()
   } else {
-    window.event ? window.event.cancelBubble = true : e.stopPropagation()
-    if (that.className.includes('icon-close')) {
+    // window.event ? window.event.cancelBubble = true : e.stopPropagation()
+    if (that.className.includes('h-icon-close')) {
       options.instance.clear()
-      that.className = 'suffix-icon iconfont icon-down'
+      that.className = 'suffix-icon iconfont h-icon-down'
       options.oInput.style.display = 'none'
       options.oPlaceholder.style.display = 'block'
       options.oMemu.style.display = 'none'
-    } else if (that.className.includes('icon-search')) {
+    } else if (that.className.includes('h-icon-search')) {
       // 调用搜索方法
       // console.log(oInput.value)
       options.instance.changeInput(options.oInput.value)

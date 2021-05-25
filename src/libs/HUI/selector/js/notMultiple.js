@@ -4,6 +4,8 @@ function Fn (state, props, ctx) {
     // 选中 导出value 值
     selected: function (optionItem) {
       // console.log('這是单选选中', optionItem)
+      ctx.emit('selected', optionItem, state.selectedObj)
+
       state.el.oInput.blur()
       state.selectedObj = optionItem
       // state.searchValue = optionItem.hLabel
@@ -13,7 +15,7 @@ function Fn (state, props, ctx) {
       // 延迟关闭下来菜单,避免拿不到值
       setTimeout(() => {
         state.el.oMemu.style.display = 'none'
-      }, 150)
+      }, 200)
     },
 
     // 清空
@@ -25,14 +27,16 @@ function Fn (state, props, ctx) {
       // 展示placeholder 下来icon 隐藏input
       state.el.oPlaceholder.style.display = 'block'
       state.el.oInput.style.display = 'none'
-      state.el.oInputIcon.className = 'suffix-icon iconfont icon-down'
+      state.el.oInputIcon.className = 'suffix-icon iconfont h-icon-down'
 
       // 导出value 值
       this.changeValue()
+      ctx.emit('clear')
     },
 
     // 失焦
     blur: function () {
+      ctx.emit('onBlur')
       // 如果selected 里面没有值,则清空input值
       if (!state.selectedObj.hValue) {
         state.searchValue = ''

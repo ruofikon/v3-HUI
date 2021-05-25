@@ -13,23 +13,23 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-close:before {
+.h-icon-close:before {
   content: "\e62b";
 }
 
-.icon-check:before {
+.h-icon-check:before {
   content: "\e672";
 }
 
-.icon-search:before {
+.h-icon-search:before {
   content: "\e611";
 }
 
-.icon-up:before {
+.h-icon-up:before {
   content: "\e65c";
 }
 
-.icon-down:before {
+.h-icon-down:before {
   content: "\e616";
 }
 

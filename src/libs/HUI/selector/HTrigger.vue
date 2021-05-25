@@ -8,7 +8,7 @@
       <div class="h-tags" v-if="selectedTags.length">
         <span class="h-span-tag" v-for="tag in selectedTags" :key="tag.hValue">
           <span class="h-tag-label">{{tag.hText}}</span>
-          <i class="tag iconfont icon-close" @click.stop="closeTag(tag)"></i>
+          <i class="tag iconfont h-icon-close" @click.stop="closeTag(tag)"></i>
         </span>
       </div>
 
@@ -27,7 +27,7 @@
 
     <!-- suffix-span -->
     <span class="suffix-span">
-      <i class="suffix-icon iconfont icon-down"></i>
+      <i class="suffix-icon iconfont h-icon-down"></i>
     </span>
   </div>
 </template>
