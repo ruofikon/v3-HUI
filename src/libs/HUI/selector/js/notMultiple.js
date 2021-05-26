@@ -56,6 +56,7 @@ function Fn (state, props, ctx) {
     changeValue: function () {
       const value = state.selectedObj.hValue || ''
       ctx.emit('update:modelValue', value)
+      ctx.emit('onChange', value)
     },
 
     // 默认选中
@@ -66,6 +67,7 @@ function Fn (state, props, ctx) {
 
         // 将选中的勾选上 -- 单选
         if (!props.multiple) {
+          // console.log('chuan', props.modelValue)
           const isHave = state.menuMap[props.modelValue]
           // 如果数据里面有这个传入key就默认选中
           if (isHave) {
@@ -74,8 +76,9 @@ function Fn (state, props, ctx) {
             // console.log(state.selectedObj)
           } else {
             // 没有就展示placeholder
-            state.el.oPlaceholder.style.display = 'block'
-            state.el.oInput.style.display = 'none'
+            // state.el.oPlaceholder.style.display = 'block'
+            // state.el.oInput.style.display = 'none'
+            state.searchValue = props.modelValue
           }
         }
       }

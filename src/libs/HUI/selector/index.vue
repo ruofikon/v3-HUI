@@ -199,12 +199,24 @@ export default {
         state.noMatchText2 = props.noMatchText
         state.historyMap[''] = state.menuData // 搜索空时返回全部
       }
-      if (!props.multiple) {
-        selectedFn._mounted() // 默认选中
-      } else {
-        multipleFn._mounted() // 默认选中
-      }
+
+      // if (!props.multiple) {
+      //   selectedFn._mounted() // 默认选中
+      // } else {
+      //   multipleFn._mounted() // 默认选中
+      // }
       stop()
+    })
+
+    watch(() => props.modelValue, nval => {
+      if (state.value !== nval) {
+        if (!props.multiple) {
+          selectedFn._mounted() // 默认选中
+        } else {
+          multipleFn._mounted() // 默认选中
+        }
+        console.log('[index]', props.modelValue)
+      }
     })
 
     // 监听 loading
@@ -216,6 +228,11 @@ export default {
 
       }
     })
+
+    // 当选中的值发生变化的时候
+    const onChange = () => {
+      ctx.emit('onChange', state.value)
+    }
 
     // 输入搜索
     const changeInput = (val) => {
@@ -332,7 +349,8 @@ export default {
       clear,
       menuScroll,
       closeTag,
-      hiddenMenu
+      hiddenMenu,
+      onChange
     }
   }
 

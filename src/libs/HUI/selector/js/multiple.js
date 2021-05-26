@@ -101,12 +101,14 @@ function Fn (state, props, ctx) {
       const value = state.selectedTagsValue || []
       // console.log('[对外导出]', value)
       ctx.emit('update:modelValue', value)
+      ctx.emit('onChange', state.value)
     },
 
     // 默认选中
     _mounted: function () {
       // 多选传入的必须是数组, 如果有则渲染
       const isLen = Array.isArray(props.modelValue) && props.modelValue.length
+
       if (isLen) {
         const selectedArr = props.modelValue
         // 隐藏placeholder

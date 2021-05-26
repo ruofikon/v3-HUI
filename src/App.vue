@@ -1,9 +1,9 @@
 <template>
   <div class="index">
-    <mySelect v-model="value1" label="单选1"></mySelect>
-    <mySelect v-model="value2" label="单选2"></mySelect>
+    <mySelect class="item-box" v-model="value1" label="单选1"></mySelect>
+    <mySelect class="item-box" v-model="op2" label="单选2" ></mySelect>
 
-    <div>
+    <div class="mwidth">
       <h1>多选 不收起下拉框</h1>
       <div class="pp">{{value3}}</div>
       <h-selector
@@ -20,7 +20,7 @@
 
     </div>
 
-    <div>
+    <div class="item-box">
       <h1>多选 自动收起下拉框</h1>
       <div class="pp">选中 -- {{value4}}</div>
       <selects2 v-model="value4"></selects2>
@@ -30,6 +30,7 @@
 
 </template>
 <script>
+import importOp from './data.js'
 import { onMounted, reactive, toRefs } from 'vue'
 import axios from 'axios'
 import mySelect from './components/mySelect'
@@ -42,10 +43,12 @@ export default {
   },
   setup (props) {
     const state = reactive({
+      importOp2: [],
+      op2: '',
       value1: '',
       value2: 4,
       value3: [],
-      value4: [3, 4, 566],
+      value4: ['sasa'],
       loading: false,
       options: [],
       options3: [
@@ -95,16 +98,21 @@ export default {
 
     onMounted(() => {
       getList('')
+      state.importOp2 = importOp
+      setTimeout(() => {
+        state.op2 = '1'
+      }, 1000)
     })
 
     function getList (key, loading) {
       loading && (state.loading = true)
       axios.get('/config/datas/options.json').then(res => {
-        console.log('[select3]', res)
+        // console.log('[select3]', res)
         state.options3 = res.data.filter(item => {
           return item.text.includes(key)
         })
         loading && (state.loading = false)
+        state.value4 = ['我是字符', 'uuu']
       }).catch(err => {
         console.log(err)
         state.options3 = []
@@ -121,7 +129,7 @@ export default {
 </script>
 <style lang="scss">
  .my-select {
-   margin: 0 100px;
+
  }
   h1 {
     text-align: center;
@@ -133,5 +141,13 @@ export default {
  .pp {
    text-align: center;
    margin-bottom: 20px;
+ }
+ .mwidth {
+   width: 340px;
+   background-color: #0f0;
+ }
+ .item-box {
+   width: 200px;
+   margin: 0 20px;
  }
 </style>

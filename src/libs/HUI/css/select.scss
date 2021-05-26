@@ -1,10 +1,10 @@
 @import '../theme-color.scss';
-$width: 280px;
 $height: 38px;
 
 @mixin placeholder {
   .h-placeholder {
     height: $height - 4;
+    padding-right: 30px;
     padding-left: 15px;
     line-height: $height - 4;
     white-space: nowrap;
@@ -13,15 +13,19 @@ $height: 38px;
     color: $placeholder-color;
   }
 }
+.h-selector {
+  width: 100%;
+}
 
 // selector
 .h-select {
   position: relative;
-  width: $width;
+  width: 100%;
   border: 1px solid $border-color;
   border-radius: 4px;
   color: $text-color;
   overflow: hidden;
+  background-color: #fff;
   transition: border-color .2s;
   -webkit-transition: border-color .2s;
   -o-transition: border-color .2s;
@@ -173,6 +177,9 @@ $height: 38px;
 .h-tags {
   display: flex;
   flex-wrap: wrap;
+  max-width: 100%;
+  padding-left: 6px;
+  // padding-right: 36px;
   // padding-bottom: 6px;
 }
 
@@ -180,11 +187,13 @@ $height: 38px;
   display: flex;
   justify-content: space-between;
   height: 28px;
+  max-width: 100%;
+  margin: 2px 4px 2px 0;
+
   line-height: 28px;
   font-size: 14px;
   background-color: #f0f2f5;
   border-radius: 4px;
-  margin: 2px 0 2px 6px;
 }
 
 .h-trigger-tags {
@@ -192,7 +201,8 @@ $height: 38px;
   align-items: center;
   flex-wrap: wrap;
   overflow: hidden;
-  max-width: $width - 30;
+  max-width: 100%;
+  padding-right: 30px;
   // min-height: 40px;
   // padding: 6px 0;
 }
@@ -200,7 +210,7 @@ $height: 38px;
 .h-tag-label {
   padding: 0 6px;
   // margin-right: 6px;
-  max-width: $width - 60;
+  max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
