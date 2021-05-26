@@ -47,7 +47,7 @@ export default {
     watch(() => props.modelValue, nval => {
       if (state.value !== nval) {
         state.value = nval
-        console.log('sel 2', state.value)
+        // console.log('sel 2', state.value)
       }
     })
 

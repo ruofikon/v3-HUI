@@ -195,7 +195,7 @@ export default {
 
     // 默认选中只需要执行一次
     const stop = watch(() => props.data, ndata => {
-      if (ndata.length > 0) {
+      if (ndata && ndata.length > 0) {
         state.noMatchText2 = props.noMatchText
         state.historyMap[''] = state.menuData // 搜索空时返回全部
       }
