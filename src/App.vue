@@ -48,7 +48,7 @@ export default {
       value1: '',
       value2: 4,
       value3: [],
-      value4: ['sasa'],
+      value4: [],
       loading: false,
       options: [],
       options3: [
@@ -112,7 +112,6 @@ export default {
           return item.text.includes(key)
         })
         loading && (state.loading = false)
-        state.value4 = ['我是字符', 'uuu']
       }).catch(err => {
         console.log(err)
         state.options3 = []
@@ -128,9 +127,7 @@ export default {
 }
 </script>
 <style lang="scss">
- .my-select {
 
- }
   h1 {
     text-align: center;
   }
@@ -144,10 +141,9 @@ export default {
  }
  .mwidth {
    width: 340px;
-   background-color: #0f0;
  }
  .item-box {
-   width: 200px;
+   width: 300px;
    margin: 0 20px;
  }
 </style>

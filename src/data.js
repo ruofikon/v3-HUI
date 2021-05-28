@@ -1,4 +1,4 @@
-export const currencyData = [{
+export default [{
   value: '1',
   label: '人民币'
 }, {

@@ -19,7 +19,7 @@
 
 <script>
 import { onMounted, reactive, toRefs, watch } from 'vue'
-import { currencyData } from '../data'
+import currencyData from '../data'
 console.log('1212', currencyData)
 // import axios from 'axios'
 export default {

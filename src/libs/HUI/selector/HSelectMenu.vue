@@ -52,8 +52,8 @@ export default {
   },
   setup (props, ctx) {
     const onSelected = (e, item) => {
-      e = e || window.event
-      e.preventDefault()
+      // e = e || window.event
+      // e.preventDefault()
       ctx.emit('onSelected', item)
     }
 
